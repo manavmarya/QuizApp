@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+{{quiz.name}}
+{% endblock title %}
+{% block header %}
+        {% if user.is_authenticated %}
+        <div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+            <div class="media align-items-end profile-head row cover px-4 pt-2">
+                <div class="profile mr-3 mb-n5"><img src="{% static 'images/avatar_teach_m.png' %}" alt="..." width="130" class="rounded mb-2 img-thumbnail"></div>
+                    <div class="media-body mb-0 text-white col-md-4 col-xs-12">
+                        <h4 class="mt-0 mb-0">{{ user.name }}</h4>
+                        <p class="small"> <i class="fas fa-map-marker-alt mr-2"></i>Class : {{ user.class_name }} </p>
+                    </div>
+                    <div class="col-md-4 col-xs-12 text-white ml-auto">
+                        <h5 class="mt-0 mb-0">{{ result.quiz.name }}</h5>
+                        <p class="small"> <i class="fas fa-map-marker-alt mr-2"></i>Score : {{ result.score }}/{{ result.quiz.total_score }} </p>
+                    </div>
+                </div>
+                <div class="p-4 rounded shadow-sm bg-light row">
+            </div>
+        </div>
+        {% endif %}
+{% endblock %}
+{% block content %}
+    {% if user.is_authenticated %}
+           <div class="container-fluid">
+                {% for question in result.subquestion_set.all %}
+                <div class="row">
+                    <div class="col-md-6 col-xs-12 p-4">
+                        <div class="row mb-4">
+                            <div class="col-md-6 col-xs-12">
+                                <h5 class="mb-0 d-inline ml-3 mr-3">Question</h5>
+                            </div>
+                        </div>
+                        <div class="p-4 rounded shadow-sm bg-light row">
+                            <div class="col-md-12 col-xs-12">
+                                {{ question.question.question_text }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xs-12 p-4">
+                        <div class="row mb-4">
+                            <div class="col-md-6 col-xs-12">
+                                <h5 class="mb-0 d-inline">Choices</h5>
+                            </div>
+                        </div>
+                        <div class="p-4 rounded shadow-sm bg-light row">
+                            <ul class="list-group col-md-12 col-xs-12" style="list-style-type: none;">
+                                <input type="hidden" value="{{ question.attempted_Choice.pk }}" name="attempted_choice">
+                                {% for choice in question.question.get_choices %}
+                                <li class="choice_list">
+                                    <button class="list-group-item list-group-item-action">
+                                        {{ choice.choice_text }}
+                                        <input type="hidden" value="{{ choice.correct }}" name="choice_correct">
+                                        <input type="hidden" value="{{ choice.pk }}" name="choice_pk">
+                                    </button>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+           </div>
+
+<script>
+$('li.choice_list').each(function(i) {
+    var choice_correct = $(this).find('input[name="choice_correct"]').val();
+    var attempted_choice = $(this).parents('ul').find('input[name="attempted_choice"]').val();
+    var choice_pk = $(this).find('input[name="choice_pk"]').val();
+    if (choice_correct == 'True') { $(this).find('button').addClass('list-group-item-success'); }
+    else if (choice_pk == attempted_choice) { $(this).find('button').addClass('list-group-item-danger'); }
+    else {}
+    });
+
+</script>
+    {% endif %}
+{% endblock content %}

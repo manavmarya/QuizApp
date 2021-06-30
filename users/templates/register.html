@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block style %}
+<style>
+	.signup-form {
+		max-width: 500px;
+    	margin: 50px auto;
+	}
+    .signup-form form {
+    	margin-bottom: 15px;
+        background: #f7f7f7;
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        padding: 30px;
+    }
+    .signup-form h2 {
+        margin: 0 0 15px;
+    }
+    .form-control, .btn {
+        min-height: 38px;
+        border-radius: 2px;
+    }
+    .btn {
+        font-size: 15px;
+        font-weight: bold;
+    }
+    .bg-white {
+        background-color : transparent !important;
+        box-shadow : none !important;
+        }
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="signup-form p-4">
+	<h2>Sign Up</h2>
+		<p>Please fill in this form to create an account!</p>
+	<hr>
+	<form method="post">
+    {% csrf_token %}
+		{% for field in register_form %}
+    	<div class="row">
+			<div class="col-12">
+    	    {{ field|as_crispy_field }}
+      		</div>
+		</div>
+		{% endfor %}
+		<div class="form-group">
+   			<button type="submit" class="btn btn-primary btn-block">Save person</button>
+		</div>
+  </form>
+</div>
+{% endblock %}
+
+<div class="col-6">
+			{% if field.errors %}
+            	{% for error in field.errors %}
+              		<li><a href="#id_{{ field.name }}" class="error">{{ error|escape }}</a></li>
+            	{% endfor %}
+			{% endif %}
+			</div>

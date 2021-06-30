@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+{{quiz.name}}
+{% endblock title %}
+{% block header %}
+        {% if user.is_authenticated %}
+        <div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+            <div class="media align-items-end profile-head row cover px-4 pt-2">
+                <div class="profile mr-3 mb-n5"><img src="{% static 'images/avatar_teach_m.png' %}" alt="..." width="130" class="rounded mb-2 img-thumbnail"></div>
+                    <div class="media-body mb-0 text-white">
+                        <h4 class="mt-0 mb-0">{{ user.name }}</h4>
+                        <p class="small"> <i class="fas fa-map-marker-alt mr-2"></i>Class : {{ user.class_name }} </p>
+                    </div>
+                </div>
+                <div class="p-4 rounded shadow-sm bg-light row">
+            </div>
+        </div>
+        {% endif %}
+{% endblock %}
+{% block content %}
+    {% if user.is_authenticated %}
+           <div class="container-fluid">
+             <form class="add_result">
+                {% csrf_token %}
+             <input type="hidden" value="{{ result.pk }}" name="result_pk">
+             <input type="hidden" value="{{ quiz.pk }}" name="quiz_pk">
+             <input type="hidden" value="0" name="score">
+             </form>
+             <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" data-interval="false">
+             <ol class="carousel-indicators">
+                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+             </ol>
+             <div class="carousel-inner">
+                {% for question in quiz.get_questions %}
+                    <div class="carousel-item">
+                    <div class="row">
+                    <input type="hidden" value="{{ result.pk }}" name="result_pk">
+                    <input type="hidden" value="{{ quiz.pk }}" name="quiz_pk">
+                    <div class="col-md-6 col-xs-12 p-4">
+                        <div class="row mb-4">
+                            <div class="col-md-6 col-xs-12">
+                                <h5 class="mb-0 d-inline ml-3 mr-3">Question</h5>
+                            </div>
+                        </div>
+                        <div class="p-4 rounded shadow-sm bg-light row">
+                            <div class="col-md-12 col-xs-12">
+
+                                {{ question.question_text }}
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xs-12 p-4">
+                        <div class="row mb-4">
+                            <div class="col-md-6 col-xs-12">
+                                <h5 class="mb-0 d-inline">Choices</h5>
+                            </div>
+                        </div>
+                        <div class="p-4 rounded shadow-sm bg-light row">
+                            <ul class="list-group col-md-12 col-xs-12" style="list-style-type: none;">
+                                {% for choice in question.get_choices %}
+                                <li class="choice_list">
+                                    <form class="add_subques">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{ result.pk }}" name="result_pk">
+                                        <input type="hidden" value="{{ quiz.pk }}" name="quiz_pk">
+                                        <input type="hidden" value="{{ question.pk }}" name="question_pk">
+                                    <button class="list-group-item list-group-item-action">
+                                        {{ choice.choice_text }}
+                                        <input type="hidden" value="{{ choice.correct }}" name="choice_correct">
+                                        <input type="hidden" value="{{ choice.pk }}" name="choice_pk">
+                                    </button>
+                                    </form>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    </form>
+                    </div>
+                    </div>
+                {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev" style="display:none">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next" style="display:none">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+             </div>
+           </div>
+<script>
+
+   $('.carousel-item:first').addClass('active');
+$(document).ready( function() {
+
+        var frm = $('.add_result');
+        data = frm.serialize();
+        frm.submit(function (e) {
+            var $this = $(this);
+            $.ajax({
+                type: "POST",
+                url: "/results/",
+                data: data,
+                success: function (data) {
+                    $('input[name="result_pk"]').val(data);
+            }
+            });
+            e.preventDefault();
+
+        });
+        frm.submit();
+    });
+
+    $('.list-group-item-action').click(function(e) {
+        $this = $(this);
+        var frm1 = $this.parents('form.add_subques');
+        data1 = frm1.serialize();
+        frm1.submit(function (e) {
+            $.ajax({
+                type: "POST",
+                url: "/results/",
+                data: data1,
+                success: function (data) {
+                    correct = $this.find('input[name="choice_correct"]').val();
+                    if (correct == "False") { $this.addClass('list-group-item-danger'); }
+                    $('li.choice_list').each( function(index) {
+                        var cur_correct = $(this).find('input[name="choice_correct"]').val();
+                        if (cur_correct == "True") {
+                            $(this).addClass('list-group-item-success'); }
+                            setTimeout(function() { $('.carousel-control-next').click() }, 1000);
+                    });
+                }
+            });
+            e.preventDefault();
+        });
+
+    });
+
+</script>
+    {% endif %}
+{% endblock content %}
+

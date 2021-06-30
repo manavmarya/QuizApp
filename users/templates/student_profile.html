@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %} {{ user.name }}{% endblock %}
+{% block header %}
+        {% if user.is_authenticated %}
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html">
+                <div class="media align-items-end profile-head row cover px-4 pt-2">
+                    <div class="profile mr-3 mb-n5"><img src="{% static 'images/avatar_teach_m.png' %}" alt="..." width="130" class="rounded mb-2 img-thumbnail"></div>
+                    <div class="media-body mb-0 text-white">
+                        <h4 class="mt-0 mb-0">{{ user.name }}</h4>
+                        <p class="small"> <i class="fas fa-map-marker-alt mr-2"></i>Class : {{ user.class_name }} </p>
+                    </div>
+                </div>
+                <div class="p-4 rounded shadow-sm bg-light row">
+                </div>
+            </div>
+
+        {% endif %}
+{% endblock %}
+{% block content %}
+        {% if user.is_authenticated %}
+           <div class="container-fluid">
+             <div class="row mb-4">
+                <div class="col-md-6 col-xs-12 p-4">
+                <h5 class="mb-0 pb-4">Available Quizes</h5>
+                <div class="p-4 rounded shadow-sm bg-light">
+                    <div class="card col-xs=12 col-md-12">
+                    <ul class="list-group list-group-flush">
+                    {% for quiz in user.teachers.get_quizes %}
+                        <li class="list-group-item holder" style="cursor:pointer;">
+                            <form method="get" action="/quizes/{{ quiz.pk }}/view">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 col-xs-4 pb-2 pt-2">
+                                <i class="bi-award-fill pr-2"></i>  {{ quiz.name }}
+                            </div>
+                            <div class="col-md-4 col-xs-4 pb-2 pt-2">
+                                <i class="bi-person-badge-fill pr-2"></i>{{ quiz.creator }}
+                            </div>
+                             <div class="col-md-2 col-xs-4 pb-2 pt-2">
+                                <i class="bi-check-square-fill pr-2"></i>{{ quiz.total_score }}
+                            </div>
+                            <p class="position-absolute" style="top:0.2rem;right:0.5rem;"><small><span class="badge badge-pill badge-dark"><i class="bi-clock-fill"></i>  {{ quiz.date_added }}</span></small></p>
+                        </div>
+                            </form>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                    </div>
+                </div>
+                </div>
+                <div class="col-md-6 col-xs-12">
+                <div class="col-md-12 col-xs-12 p-4">
+                <h5 class="mb-0 pb-4">Attempted Quizes</h5>
+                <div class="p-4 rounded shadow-sm bg-light">
+                    <div class="card col-xs=12 col-md-12">
+                    <ul class="list-group list-group-flush">
+                    {% for result in user.result_set.all %}
+                        <li class="list-group-item holder" style="cursor:pointer;">
+                            <form method="get" action="/results/{{ result.pk }}/view">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 col-xs-4 pb-2 pt-2">
+                                <i class="bi-award-fill pr-2"></i>  {{ result.quiz.name }}
+                            </div>
+                            <div class="col-md-4 col-xs-4 pb-2 pt-2">
+                                <i class="bi-award-fill pr-2"></i>  {{ result.quiz.creator }}
+                            </div>
+                             <div class="col-md-4 col-xs-4 pb-2 pt-2">
+                                <i class="bi-check-square-fill pr-2"></i>{{ result.score }}/{{ result.quiz.total_score }}
+                            </div>
+                            <p class="position-absolute" style="top:0.2rem;right:0.5rem;"><small><span class="badge badge-pill badge-dark"><i class="bi-clock-fill"></i>  {{ result.quiz.date_added }}</span></small></p>
+                        </div>
+                            </form>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                    </div>
+                </div>
+                </div>
+                </div>
+            </div>
+           </div>
+<script>
+    $('li.holder').click(function() {
+        console.log(1);
+        $(this).children('form').submit();
+        });
+
+</script>
+        {% endif %}
+
+{% endblock %}
