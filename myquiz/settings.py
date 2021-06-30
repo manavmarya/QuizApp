@@ -24,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'gz(pxpfmwmr91s6h*-m1c89j%9ll1l@l$#fa-*wr4hc*kk(z8@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['quizapp20041995.herokuapp.com']
+ALLOWED_HOSTS = ['quizapp20041995.herokuapp.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -83,9 +83,9 @@ WSGI_APPLICATION = 'myquiz.wsgi.application'
 
 DATABASES = {
     'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'ciba',
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
+    }
 }
 
 AUTH_USER_MODEL = 'users.User'
@@ -140,4 +140,6 @@ CRISPY_CLASS_CONVERTERS = {
 
 }
 
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 django_heroku.settings(locals())
