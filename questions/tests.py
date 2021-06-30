@@ -9,8 +9,11 @@ class QuestionModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         user_manager = UserManager()
+
         user = user_manager.create_superuser('mmm@hh.com', 'kinshuk786')
+
         quiz = Quiz.objects.create(name="Science", topic="Physics", total_score=50, creator=user, date_added=date.fromisoformat('2019-12-04'))
+
         Question.objects.create(question_text='1+1', quiz=quiz)
 
     def question_name_label(self):
