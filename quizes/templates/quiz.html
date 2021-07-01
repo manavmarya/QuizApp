@@ -129,12 +129,15 @@ $(document).ready( function() {
                 success: function (data) {
                     correct = $this.find('input[name="choice_correct"]').val();
                     if (correct == "False") { $this.addClass('list-group-item-danger'); }
-                    $this.siblings().each( function(index) {
-                        var cur_correct = $(this).find('input[name="choice_correct"]').val();
+                    $this.parents('ul').children('li').each( function(index, element) {
+                        console.log($(element).html());
+                        cur_correct = $(element).find('input[name="choice_correct"]').val();
+                        console.log(cur_correct);
                         if (cur_correct == "True") {
-                            $(this).find('button').addClass('list-group-item-success'); }
-                            setTimeout(function() { $('.carousel-control-next').click() }, 1000);
+                            $(element).find('button').addClass('list-group-item-success'); }
+                            
                     });
+                    setTimeout(function() { $('.carousel-control-next').click() }, 1000);
                 }
             });
             e.preventDefault();
