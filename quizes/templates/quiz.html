@@ -13,7 +13,7 @@
                         <p class="small"> <i class="fas fa-map-marker-alt mr-2"></i>Class : {{ user.class_name }} </p>
                     </div>
                 </div>
-                <div class="p-4 rounded shadow-sm bg-light row"><a href='/admin/logout/' class='btn btn-light'>Logout</a>
+                <div class="p-4 rounded shadow-sm bg-light row"><a href='/admin/logout/' class='btn btn-light' style="margin-left:auto;margin-right:0.5rem;">Logout</a><a href='/profile/' class='btn btn-light' style="margin-left:auto;margin-right:0.5rem;">Home</a>
             </div>
         </div>
         {% endif %}
@@ -129,7 +129,7 @@ $(document).ready( function() {
                 success: function (data) {
                     correct = $this.find('input[name="choice_correct"]').val();
                     if (correct == "False") { $this.addClass('list-group-item-danger'); }
-                    $('li.choice_list').each( function(index) {
+                    $this.siblings().each( function(index) {
                         var cur_correct = $(this).find('input[name="choice_correct"]').val();
                         if (cur_correct == "True") {
                             $(this).find('button').addClass('list-group-item-success'); }
