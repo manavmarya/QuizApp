@@ -22,11 +22,11 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #path('', include('users.urls', namespace='users')),
-    #path('', include('quizes.urls', namespace='quizes')),
-    #path('login/', auth_views.LoginView.as_view(template_name='login.html', redirect_authenticated_user=True)),
-    #path('password_change/', auth_views.PasswordChangeView.as_view(template_name='password_change.html')),
-    #path('', include('questions.urls', namespace='questions')),
-    #path('', include('results.urls', namespace='results'))
+    path('', include('users.urls', namespace='users')),
+    path('', include('quizes.urls', namespace='quizes')),
+    path('login/', auth_views.LoginView.as_view(template_name='login.html', redirect_authenticated_user=True)),
+    path('password_change/', auth_views.PasswordChangeView.as_view(template_name='password_change.html')),
+    path('', include('questions.urls', namespace='questions')),
+    path('', include('results.urls', namespace='results'))
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
