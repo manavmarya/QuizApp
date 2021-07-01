@@ -27,7 +27,8 @@ def add_edit_result(request):
                 no = 0
             else:
                 no = 1
-            result.score = result.score + no * result.quiz.total_score / 10
+            no_of_questions = quiz.question_set.count()
+            result.score = result.score + no * result.quiz.total_score / no_of_questions
             result.save()
             SubQuestion(question=question, attempted_Choice=attempted_Choice, quiz=quiz, result=result).save()
             result_form = NewResultForm(instance=result)
